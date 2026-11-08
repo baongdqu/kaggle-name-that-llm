@@ -751,3 +751,34 @@
 ### 4. Bổ Sung Mục 7 Vào `AGENTS.md` (Quy Chuẩn Phổ Quát Cho Mọi Dự Án):
 - Văn bản hóa thành **Mục 7: Quy Chuẩn Trích Xuất Dữ Liệu Nguồn Cho NotebookLM / AI Chatbot (NotebookLM & AI Chatbot Extraction Protocol)**.
 - Thiết kế mang tính khái quát, phổ quát cho mọi loại dự án phần mềm, AI, data science: Cấu trúc trải phẳng 1 tầng, ma trận ưu tiên chọn lọc 300 file, đồng nhất `.txt`, bóc tách Notebook và nguyên tắc cắt bỏ phần cũ trước (Trim Oldest Content First).
+
+---
+
+## 29. Phiên Làm Việc (Session) [2026-11-08 21:20 - 21:48]
+**Mục tiêu chính:**
+- Phản biện & Định hướng chiến lược nâng cấp Tầng 1 (Layer 1 Backbone).
+- Thiết lập bước ngoặt tư duy: Xác lập mục tiêu tối thượng `/goal` là **Đoạt Top 1 cuộc thi**, thực hiện "Sáng tạo phá hủy" (Creative Destruction), ngừng nộp bài mò mẫm trên Kaggle Cloud và chuyển dịch 100% sang nghiên cứu thực nghiệm tại máy Local (**Local-First Paradigm**).
+- Tiếp nhận bản tư vấn chiến lược đỉnh cao từ Claude Sonnet: Phân tích 3 sai lầm tư duy khi bị kẹt ở mốc 0.664 và xây dựng 3 trụ cột kỹ thuật mới để bứt phá lên 0.72 - 0.75+.
+
+**Thành phần tham vấn:**
+- [🤖 Agent: Gemini 3.8 Flash (Antigravity) | Mode: Main Operator | Thinking: Low]
+- [🧠 Agent: Claude Sonnet (từ Kaggle) | Mode: Senior Consultant | Thinking: Enabled (Budget: 3550 + 2223 reasoning tokens)]
+
+### 1. Phân Tích Pháp Y Từ Claude Sonnet: Vì Sao Bị Kẹt Ở Mốc 0.664:
+- **Coi đây là bài toán NLP thuần túy thay vì Điều tra Pháp y Văn phong (Stylometry & Forensics):** TF-IDF và vector nhúng sâu thông thường chỉ học từ vựng và chủ đề bề mặt, bỏ sót dấu vân tay thống kê nội tại của từng dòng LLM.
+- **Tư duy 'tìm một model to hơn' thay vì 'kết hợp nhiều nguồn tín hiệu yếu nhưng trực giao':** Sự kết hợp giữa các nhánh độc lập (dấu vân tay tokenizer + đặc trưng văn phong + vector nhúng + ràng buộc Hungarian) mới tạo ra bước nhảy vọt.
+- **Bẫy 'Leo dốc trên nhiễu của Public Leaderboard':** Việc nộp bài liên tục để chỉnh các trọng số vi mô $\pm 0.1$ chỉ làm tốn quota mà không giải quyết được gốc rễ bài toán.
+
+### 2. Ba Trụ Cột Kỹ Thuật Đột Phá Lên 0.72 - 0.75+ (Top 1 Roadmap):
+1. **Trụ cột 1: Dấu vân tay Tokenizer & Tỷ lệ nén (Tokenizer Fragmentation & Compression Ratio):**
+   - Đo tỷ lệ nén (bytes/token), mật độ token hiếm và độ phì nhiêu từ ghép qua các bộ tokenizer đại diện (Tiktoken, Qwen Byte-BPE, SentencePiece). Tín hiệu mang tính bất biến cao, không phụ thuộc vào chủ đề prompt.
+2. **Trụ cột 2: Pháp y Văn phong Tường minh & Bộ Phân Tách Anh Em Đối Kháng (Sibling Specialists):**
+   - Bóc tách các đặc trưng typographic cụ thể (em-dash, bullet markdown, câu chào disclaimer, phân phối độ dài câu).
+   - Huấn luyện mô hình phân loại đối kháng chuyên trách giải quyết các cặp anh em song sinh hay nhầm lẫn nhất (`claude-opus-4-6` vs `4-8`, `gemini-3.7` vs `3.8`, `gpt-5.6-sol` vs `terra`).
+3. **Trụ cột 3: Ghép Cặp Mỏ Neo Không Giám Sát & Stacking Meta-Learner:**
+   - Ghép cặp Hungarian trên các cụm mỏ neo tinh khiết không nhãn, fallback argmax an toàn cho văn bản đơn lẻ.
+   - Xếp chồng xác suất OOF qua Meta-Learner Logistic Regression có hiệu chuẩn nhiệt độ (temperature calibration).
+
+### 3. Kỷ Luật Vận Hành Local-First:
+- Tuyệt đối không nộp bài mò mẫm lên Kaggle.
+- Mọi thử nghiệm đều phải được đo lường khách quan trên bộ test local không nhãn prompt (`scratch/cache_cv_data.npz` và `GroupKFold`), chỉ xuất xưởng nộp bài khi chứng minh mức tăng trưởng thực chất $\ge +0.03$ đến $+0.06$.
