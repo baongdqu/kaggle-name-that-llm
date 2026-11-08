@@ -1,10 +1,10 @@
-# Specifically unignore data/ and downloaded_datasets/ directories
+# Specifically unignore data/ directory
 !/data/
-!/downloaded_datasets/
-
-# Unignore files inside data/ and downloaded_datasets/
 !/data/**
-!/downloaded_datasets/**
+
+# Ignore downloaded_datasets completely
+downloaded_datasets/
+/downloaded_datasets/
 
 # Large model weights and scratch lora outputs
 /dataset_sibling_lora/
@@ -28,9 +28,6 @@
 
 !/data/*.parquet
 !/data/*.csv
-!/downloaded_datasets/**/*.parquet
-!/downloaded_datasets/**/*.jsonl
-!/downloaded_datasets/**/*.csv
 
 # Environment & Credentials (NEVER upload credentials)
 .env
