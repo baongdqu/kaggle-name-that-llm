@@ -1,0 +1,10 @@
+feature,train_real,pool_v7_raw,pool_v9_clean,gap_raw,gap_clean
+ends with . ! ? or quote,99.93,93.38,99.37,6.55,0.56
+uses we / our / us,30.68,15.5,15.5,15.18,15.18
+uses I / me / my,6.37,15.42,5.81,9.05,0.56
+contains a digit,9.89,29.17,20.82,19.27,10.92
+contains ( ),1.08,11.41,4.08,10.34,3.0
+contains /,0.26,11.63,1.56,11.37,1.3
+"contains straight """,4.04,19.11,8.69,15.07,4.65
+contains a colon,52.13,54.04,46.65,1.91,5.48
+API dump or refusal,0.0,8.24,0.0,8.24,0.0
