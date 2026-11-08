@@ -707,3 +707,47 @@
 3. **Giám sát Kỷ Luật (Instrumentation Assertions):**
    - Assert hungarian_invocation_count > 0 trước khi xuất file submission.parquet.
    - Giám sát per-class recall không được có bất kỳ lớp nào rơi về 0%.
+
+---
+
+## 28. Phiên Làm Việc (Session) [2026-11-08 19:15 - 21:05]
+**Mục tiêu chính:**
+- Phản biện & Báo cáo pháp y toàn diện từ Claude Sonnet & Gemini Flash High về hiện tượng trần điểm 0.664 và thảm họa V93 (0.528).
+- Triển khai, đóng gói và nộp phiên bản **Champion V94** (Sửa triệt để bug slicing dòng 866, Hungarian an toàn với ngưỡng gom cụm vàng thr=0.20, fallback argmax bảo vệ sàn 0.664).
+- Thiết lập kho lưu trữ Git GitHub ở chế độ Public, quản lý kích thước kho lưu trữ và cách ly các dataset nặng.
+- Thiết kế thư mục xuất khẩu dữ liệu cho NotebookLM / AI Chatbot: `( upload_ai_chatbot )` với chuẩn 300 file, cấu trúc trải phẳng 1 tầng, chuẩn hóa 100% đuôi `.txt` và cắt gọt file quá khổ (>200MB hoặc >500.000 từ).
+- Văn bản hóa toàn diện quy chuẩn trích xuất thành Mục 7 mang tính phổ quát trong `AGENTS.md`.
+
+**Thành phần tham vấn:**
+- [🤖 Agent: Gemini 3.8 Flash (Antigravity) | Mode: Main Operator / Lead Heavy Engineer | Thinking: Low / High]
+- [🧠 Agent: Claude Sonnet (từ Kaggle) | Mode: Senior Consultant | Thinking: Enabled (Budget: 4096 tokens)]
+
+### 1. Triển Khai & Kiểm Định Champion V94:
+- **Kiến trúc cốt lõi:**
+  - Giữ nguyên `--perpassage 1` ở tầng trích xuất embedding để vector Qwen14B, DeBERTa-v3-large và ModernBERT hoàn toàn thuần khiết (không bị méo mó bởi `center_groups`).
+  - Sửa lỗi slicing tại dòng 866: Dùng ma trận chữ nhật $(k, M)$ với $M = \text{len}(\_siblings)$, giải trọn vẹn bài toán ghép cặp chị em bằng `linear_sum_assignment` (phục hồi hoàn toàn recall cho `claude-opus-5`, `gemini-3.8-flash`, `gpt-5.6-terra`).
+  - Kích hoạt Hungarian trên các cụm văn bản có kích thước $2 \le \text{size} \le 18$ được gom bằng TF-IDF Character n-gram (3-5) với khoảng cách cosine $\text{thr} = 0.20$ (độ tinh khiết 100%). Các cụm singleton tự động fallback về argmax độc lập.
+- **Tình trạng nộp bài:**
+  - Kaggle Kernel: `baonguyenduyquoc/champion-v94` (`KernelWorkerStatus.COMPLETE`).
+  - Submission ID: `58125920` (Đang chấm điểm trên hệ thống Kaggle hidden test).
+
+### 2. Quản Trị Kho Git GitHub & Tối Ưu Dung Lượng:
+- **Kho lưu trữ:** `https://github.com/baongdqu/kaggle-name-that-llm` được chuyển sang chế độ **PUBLIC** (`{"isPrivate": false, "visibility": "PUBLIC"}`).
+- **Gỡ bỏ dữ liệu ngoại lai nặng khỏi Git:** Đã thực hiện `git rm -r --cached downloaded_datasets`, cập nhật `.gitignore` và commit đẩy lên GitHub. Dung lượng kho lưu trữ được tối ưu giảm từ **`435.50 MB`** xuống chỉ còn **`46.61 MB`** (giảm 89.3%), giúp việc clone và đồng bộ cực kỳ gọn nhẹ.
+
+### 3. Đóng Gói Trích Xuất Dữ Liệu Cho NotebookLM / AI Chatbot:
+- **Thư mục trích xuất:** `( upload_ai_chatbot )` được tạo trực tiếp tại thư mục gốc, được thêm vào `.gitignore` để không làm nặng Git.
+- **Cấu trúc trải phẳng tuyệt đối (Flat Structure):** Toàn bộ file nằm tại 1 tầng ngoài cùng (zero subdirectories), tên file ghép tiền tố thư mục bằng hai dấu gạch dưới `__` (ví dụ: `champion_v94__champion-v94.txt`, `data__train.txt`).
+- **Giới hạn số lượng:** Đúng chuẩn **`299 files`** (nằm nghiêm ngặt trong hạn mức $\le 300$ file), chọn lọc các tài liệu và mã nguồn có giá trị kỹ thuật cao nhất.
+- **Chuẩn hóa 100% sang `.txt`:**
+  - Toàn bộ Notebook `.ipynb` được bóc tách từng cell thành code và text rõ ràng (`# --- CELL (code/markdown) ---`), loại bỏ JSON rác.
+  - Toàn bộ file mã nguồn (`.py`, `.md`, `.json`, `.csv`) đổi đuôi sang `.txt`.
+- **Cắt gọt các file quá khổ (>200MB hoặc >500.000 từ):**
+  - `abc CHAT_HISTORY.txt`: Cắt gọt phần lịch sử cũ ở đầu, giữ lại 400.019 từ mới nhất (3.65 MB).
+  - `data__ntl_extra_passages_claude.txt`: Cắt gọt phần đầu, giữ lại 400.048 từ mới nhất (2.70 MB).
+  - Cả hai file đều được chèn header thông báo cắt gọt chuẩn mực:  
+    `[NOTE: File exceeded size/word limit. Older history truncated; preserving the latest and most relevant sections.]`
+
+### 4. Bổ Sung Mục 7 Vào `AGENTS.md` (Quy Chuẩn Phổ Quát Cho Mọi Dự Án):
+- Văn bản hóa thành **Mục 7: Quy Chuẩn Trích Xuất Dữ Liệu Nguồn Cho NotebookLM / AI Chatbot (NotebookLM & AI Chatbot Extraction Protocol)**.
+- Thiết kế mang tính khái quát, phổ quát cho mọi loại dự án phần mềm, AI, data science: Cấu trúc trải phẳng 1 tầng, ma trận ưu tiên chọn lọc 300 file, đồng nhất `.txt`, bóc tách Notebook và nguyên tắc cắt bỏ phần cũ trước (Trim Oldest Content First).
