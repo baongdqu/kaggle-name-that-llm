@@ -646,3 +646,64 @@
 - **Trạng thái Kernel:** `KernelWorkerStatus.COMPLETE`
 - **Mã Submission ID:** `58125920`
 - **Trạng thái Submission:** `SubmissionStatus.PENDING` (Đang chạy chấm điểm trên tập test ẩn của Kaggle).
+
+
+---
+
+## 27. Khởi Tạo Git Repository Riêng Tư (Private) & Push Lên GitHub
+
+**Thời điểm:** 08/11/2026 19:02
+**Thành phần tham vấn:**
+- `[🤖 Agent: Gemini 3.8 Flash (Antigravity) | Mode: Lead Heavy Engineer | Thinking: High]`
+- `[🧠 Agent: Claude Sonnet (từ Kaggle) | Mode: Senior Consultant | Thinking: Enabled (Budget: 4096 tokens)]`
+
+### 1. Hành Động Kỹ Thuật Đã Thực Hiện:
+- **Tạo file `.gitignore` tiêu chuẩn thi đấu:**
+  - Loại trừ toàn bộ dữ liệu nặng (`/data/`, `/downloaded_datasets/`, `*.parquet`, `*.npy`, `*.npz`, `*.bin`, `*.safetensors`, `*.pt`, `*.jsonl`).
+  - Bảo mật tuyệt đối thông tin xác thực (`.env`, `kaggle.json`).
+  - Tổng dung lượng mã nguồn sau lọc: **26.71 MB** (hoàn toàn sạch sẽ, không có file nào vượt quá giới hạn 100MB của GitHub).
+- **Khởi tạo & Commit:**
+  - Khởi tạo git repo nhánh `main`: `1259 files changed, 271,804 insertions(+)`.
+  - Message: `feat: Kaggle Name That LLM pipeline and architectures (Champion V1 to V94)`.
+- **Tạo Repository Private trên GitHub:**
+  - Tên repo: `baongdqu/kaggle-name-that-llm`
+  - URL: `https://github.com/baongdqu/kaggle-name-that-llm`
+  - Chế độ: **Private** (`"isPrivate": true`).
+  - Đã liên kết remote `origin/main` và push toàn bộ mã nguồn thành công.
+
+
+---
+
+## 28. Phiên Kiểm Toán Pháp Y Cấp Cao: Claude Sonnet & Gemini Flash High Thẩm Định Toàn Diện Phòng Thí Nghiệm Cục Bộ (Oracle Illusion & Zero-Leak Rebuild)
+
+**Thời điểm:** 08/11/2026 19:07
+**Thành phần tham vấn:**
+- [🤖 Agent: Gemini 3.8 Flash (Antigravity) | Mode: Lead Heavy Engineer | Thinking: High]
+- [🧠 Agent: Claude Sonnet (từ Kaggle) | Mode: Senior Consultant | Thinking: Enabled (Budget: 3983 reasoning tokens)]
+
+### 1. Bản Án Pháp Y: Giải Mã Hiện Tượng 'Local CV Siêu Cao (72.73%) Nhưng Kaggle LB Chỉ Tăng 1 Điểm (0.664)'
+- **Bản chất 'Ảo Giác Mỏ Neo' (Oracle Illusion) trong phòng thí nghiệm:**
+  - Trong 	est_cross_72_milestone.py và scratch/cache_cv_data.npz, thuật toán Bipartite Hungarian 18x18 được chạy trực tiếp trên cột prompt_id có sẵn từ 	rain.csv.
+  - Nhưng trên tập test của Kaggle (	est.csv), **hoàn toàn KHÔNG CÓ cột prompt_id**! Hệ thống bắt buộc phải tự gom cụm không giám sát (Unsupervised Clustering) trước khi ghép cặp.
+  - Do đó, mốc 72.73% CV cục bộ là **cận trên lý thuyết hoàn hảo (theoretical upper bound)**, chứ không phải ước lượng không chệch (unbiased estimate) của pipeline thực tế trên tập test ẩn.
+- **Vì sao V92 chỉ đạt 0.664 (+0.001):**
+  - Trong notebook V92, do duy trì tham số --perpassage 1, dòng lệnh 905 pred = tot.argmax(1) if a.perpassage else hungarian(...) đã **tắt hoàn toàn thuật toán Hungarian trên tập test**, tự động rơi về rgmax độc lập!
+  - Toàn bộ cơ chế Hungarian đóng góp cho mốc 72.73% CV **chưa từng một lần được kích hoạt trên Kaggle test** trong phiên bản V92. Điểm 0.664 thực chất là điểm số độc lập của khối Deep Learning ensemble (Qwen14B + DeBERTa + ModernBERT).
+- **Giải phẫu toán học thảm họa V93 sụp đổ xuống 0.528:**
+  - Lỗi kép (Double Fault):
+    1. Gom cụm với 	hr=0.02 bị chaining bắc cầu, sau đó center_groups trừ mean làm méo mó vector embedding gốc của Qwen/DeBERTa.
+    2. Slicing tĩnh dòng 866 candidates[:len(_sib_indices)] đã cắt bỏ phần tử cuối, triệt tiêu 100% recall của claude-opus-5, gemini-3.8-flash, gpt-5.6-terra (Recall = 0%).
+  - **Chứng minh toán học:**
+    \Delta BA = rac{1}{18} \sum_{i=1}^{18} \Delta 	ext{recall}_i = rac{3 	imes 0.816}{18} = 0.136 \implies BA_{	ext{thực tế}} = 0.664 - 0.136 = 0.528
+    Con số tính toán lý thuyết khớp chính xác 100% đến từng chữ số thập phân với điểm số thực tế trả về từ Kaggle.
+
+### 2. Kế Hoạch Tái Thiết Lập Phòng Thí Nghiệm Cục Bộ Chuẩn Mực (Zero-Leak, Zero-Oracle):
+1. **Loại bỏ 100% prompt_id khỏi khâu Inference của Local Validation:**
+   - Tập validation phải có cấu trúc schema đúng 2 cột id và 	ext giống hệt 	est.csv.
+2. **Quy trình 3 tầng đồng nhất 100% giữa Local Lab và Production Submission:**
+   - Tầng 1: Gom cụm không giám sát (Unsupervised Clustering) bằng TF-IDF Char n-gram (3-5) với Ngưỡng Vàng $	ext{thr} = 0.20$ (đã chứng minh triệt tiêu 100% nhiễu liên-prompt).
+   - Tầng 2: Đánh giá độ tinh khiết (Purity & Size Gate) — chỉ chạy Hungarian trên cụm hợp lệ  \le 	ext{size} \le 18$.
+   - Tầng 3: Safe Fallback — các đoạn văn đơn lẻ (singleton) hoặc cụm bất thường ( > 18$) tự động quay về rgmax độc lập, bảo vệ tuyệt đối ngưỡng sàn 0.664.
+3. **Giám sát Kỷ Luật (Instrumentation Assertions):**
+   - Assert hungarian_invocation_count > 0 trước khi xuất file submission.parquet.
+   - Giám sát per-class recall không được có bất kỳ lớp nào rơi về 0%.
