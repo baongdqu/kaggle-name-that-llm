@@ -1,11 +1,16 @@
-# Data & Datasets
-/data/
-/downloaded_datasets/
+# Specifically unignore data/ and downloaded_datasets/ directories
+!/data/
+!/downloaded_datasets/
+
+# Unignore files inside data/ and downloaded_datasets/
+!/data/**
+!/downloaded_datasets/**
+
+# Large model weights and scratch lora outputs
 /dataset_sibling_lora/
 /scratch/lora24_sibling_out/
 
-# Large binary, data & model weights
-*.parquet
+# Large binary / model weights
 *.npy
 *.npz
 *.bin
@@ -16,9 +21,18 @@
 *.gz
 *.zip
 *.7z
+
+# Ignore parquet/jsonl everywhere EXCEPT in data/ and downloaded_datasets/
+*.parquet
 *.jsonl
 
-# Environment & Credentials
+!/data/*.parquet
+!/data/*.csv
+!/downloaded_datasets/**/*.parquet
+!/downloaded_datasets/**/*.jsonl
+!/downloaded_datasets/**/*.csv
+
+# Environment & Credentials (NEVER upload credentials)
 .env
 *.env
 *.key
