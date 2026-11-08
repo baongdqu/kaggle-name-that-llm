@@ -15,6 +15,11 @@
   - [5.1. Cơ chế Tự động Trích xuất & Lưu trữ Lịch sử (`CHAT_HISTORY.md`)](#1-cơ-chế-tự-động-trích-xuất--lưu-trữ-lịch-sử-chat_historymd)
   - [5.2. Cơ chế Tự động Đề xuất & Kích hoạt Nén Context (`/compact`)](#2-cơ-chế-tự-động-đề-xuất--kích-hoạt-nén-context-compact)
   - [5.3. Phương pháp Định vị & Truy xuất Chi tiết Đã Nén (Methodical Retrieval Protocol)](#3-phương-pháp-định-vị--truy-xuất-chi-tiết-đã-nén-methodical-retrieval-protocol)
+- [6. Quy Chuẩn Tối Ưu Hóa & Tiết Kiệm Token (Token Conservation Protocol)](#-quy-chuẩn-tối-ưu-hóa--tiết-kiệm-token-token-conservation-protocol)
+- [7. Quy Chuẩn Trích Xuất Dữ Liệu Nguồn Cho NotebookLM / AI Chatbot (NotebookLM & AI Chatbot Extraction Protocol)](#-quy-chuẩn-trích-xuất-dữ-liệu-nguồn-cho-notebooklm--ai-chatbot-notebooklm--ai-chatbot-extraction-protocol)
+  - [7.1. Cấu trúc thư mục trích xuất & Giới hạn số lượng file](#1-cấu-trúc-thư-mục-trích-xuất--giới-hạn-số-lượng-file)
+  - [7.2. Chuyển đổi định dạng sang thuần `.txt` & Xử lý Notebook](#2-chuyển-đổi-định-dạng-sang-thuần-txt--xử-lý-notebook)
+  - [7.3. Quy tắc cắt gọt (Truncation) cho file quá khổ (>200MB hoặc >500.000 từ)](#3-quy-tắc-cắt-gọt-truncation-cho-file-quá-khổ-200mb-hoặc-500000-từ)
 
 ---
 
@@ -215,3 +220,34 @@ Nhằm tối ưu hóa triệt để chi phí, gia tăng tốc độ phản hồi
 ### 2. Quy chuẩn Chỉnh Sửa Mã Nguồn Cục Bộ (Targeted Diff over Full Rewrite):
 - **Ưu tiên `edit_file`:** Khi sửa đổi code trong các file đã có (đặc biệt các file trên 50 dòng), bắt buộc sử dụng `edit_file` để thay thế đúng đoạn code cần sửa (targeted block replacement) kèm ngữ cảnh tối thiểu.
 - **Hạn chế `write_file` ghi đè toàn bộ:** Tránh tuyệt đối việc đọc một file hàng trăm dòng rồi viết đè lại toàn bộ chỉ để sửa vài dòng logic, gây lãng phí nghiêm trọng token cả đầu ra lẫn đầu vào.
+
+---
+
+# 7. Quy Chuẩn Trích Xuất Dữ Liệu Nguồn Cho NotebookLM / AI Chatbot (NotebookLM & AI Chatbot Extraction Protocol)
+
+Áp dụng khi cần đóng gói toàn bộ mã nguồn, tài liệu, kiến trúc của dự án để đưa lên NotebookLM hoặc bất kỳ nền tảng AI Chatbot nào để tra cứu, nghiên cứu hoặc hỏi đáp tổng thể:
+
+### 1. Cấu trúc thư mục trích xuất & Giới hạn số lượng file:
+- **Tên thư mục quy chuẩn:** Tạo thư mục riêng biệt tại thư mục gốc với tên: `( upload_ai_chatbot )` (hoặc tên theo yêu cầu cụ thể của phiên làm việc).
+- **Cấu trúc trải phẳng (Flat Structure):** Toàn bộ file phải được trải phẳng 1 tầng trực tiếp (zero subdirectories). Các file từ các thư mục con phải được đặt tên có tiền tố phân tách bằng hai dấu gạch dưới `__` (ví dụ: `champion_v94__infer.txt`, `scratch__hungarian_solver.txt`) để bảo toàn ngữ cảnh và xuất xứ nguồn.
+- **Giới hạn số lượng file ($\le 300$ files):**
+  - Nếu tổng số file trong dự án vượt quá 300 file, Agent bắt buộc phải **chọn lọc tối đa 300 file cốt lõi và quan trọng nhất**.
+  - *Thứ tự ưu tiên sàng lọc:*
+    1. Toàn bộ tài liệu phân tích, kiến trúc tổng quan, quy chuẩn hệ thống và nhật ký `CHAT_HISTORY.md` tại thư mục gốc.
+    2. Toàn bộ mã nguồn, notebook và metadata của các thế hệ Champion hiện đại nhất (ví dụ: V75 – V94).
+    3. Các kernel chuyên gia độc lập (`sota_kernel`, `claude_gate_kernel`, `lab`).
+    4. Các mã nguồn thực nghiệm, kiểm thử thuật toán trọng điểm trong `scratch/` (ưu tiên theo từ khóa giải thuật: hungarian, sibling, cv, benchmark, calibration, residual).
+- **Cách ly khỏi Git:** Thư mục trích xuất này bắt buộc phải được khai báo trong `.gitignore` để không làm nặng hay gây xung đột mã nguồn trên kho lưu trữ Git/GitHub.
+
+### 2. Chuyển đổi định dạng sang thuần `.txt` & Xử lý Notebook:
+- **Chuẩn hóa đuôi tệp:** **100% tất cả các tệp tin** đưa vào thư mục trích xuất đều phải được chuyển đổi thành đuôi mở rộng `.txt` (ví dụ: `.py` -> `.txt`, `.md` -> `.txt`, `.json` -> `.txt`, `.csv` -> `.txt`).
+- **Bóc tách Jupyter Notebook (`.ipynb`):**
+  - Tuyệt đối không sao chép nguyên file `.ipynb` dạng raw JSON nặng nề.
+  - Phải bóc tách từng cell của Notebook thành các khối code và markdown rõ ràng, có chú thích phân định tường minh (`# --- CELL (code/markdown) ---`) và lưu dưới dạng file `.txt` nhẹ nhàng, giúp NotebookLM/AI Chatbot đọc hiểu logic mượt mà và không bị nhiễu siêu dữ liệu.
+
+### 3. Quy tắc cắt gọt (Truncation) cho file quá khổ (>200MB hoặc >500.000 từ):
+- **Ngưỡng an toàn NotebookLM / AI Chatbot:** Nếu phát hiện bất kỳ file nào có dung lượng vượt quá **200 MB** HOẶC độ dài vượt quá **500.000 từ** (word count):
+  - **Nguyên tắc cắt bỏ:** Bắt buộc phải **cắt gọt phần nội dung cũ hơn ở phía trước (Trim oldest content)**, giữ lại phần nội dung mới nhất, các cập nhật gần nhất và các kết luận cốt lõi ở phía sau.
+  - **Ghi chú vết cắt:** Đầu file sau khi cắt phải được chèn thêm dòng thông báo chuẩn:
+    `[NOTE: File exceeded size/word limit. Older history truncated; preserving the latest and most relevant sections.]`
+  - Đảm bảo file sau khi cắt gọt nằm hoàn toàn trong giới hạn xử lý tối đa của NotebookLM mà vẫn giữ nguyên vẹn 100% ngữ cảnh đương đại của dự án.
