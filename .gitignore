@@ -6,6 +6,10 @@
 downloaded_datasets/
 /downloaded_datasets/
 
+# AI Chatbot upload folder (local export)
+upload_ai_chatbot/
+/upload_ai_chatbot/
+
 # Large model weights and scratch lora outputs
 /dataset_sibling_lora/
 /scratch/lora24_sibling_out/
