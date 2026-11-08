@@ -1,0 +1,1 @@
+{"id": "baonguyenduyquoc/test-gemma2-model-source", "title": "Test Gemma2 Model Source", "code_file": "test.py", "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false, "enable_internet": false, "dataset_sources": ["alexchilton/ntl-ts-gemma2-9b"], "model_sources": ["google/gemma-2/Transformers/9b/2"]}

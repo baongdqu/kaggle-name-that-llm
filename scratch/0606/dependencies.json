@@ -1,0 +1,209 @@
+{
+  "scope": "Public dependency references only; no attached data or model bytes.",
+  "public_original": {
+    "url": "https://www.kaggle.com/code/josephadamski91/teach-the-model-10-atlas?scriptVersionId=360203672",
+    "script_version_id": 360203672,
+    "author_public_score": 0.607
+  },
+  "own_saved_reproduction": {
+    "script_version_id": 360410554,
+    "observed_public_score": 0.606
+  },
+  "input_count": 24,
+  "inputs": [
+    {
+      "kind": "competition",
+      "ref": "name-that-llm",
+      "url": "https://www.kaggle.com/competitions/name-that-llm"
+    },
+    {
+      "kind": "dataset",
+      "ref": "seyitkaangunes/ntl-extra-api-passages",
+      "url": "https://www.kaggle.com/datasets/seyitkaangunes/ntl-extra-api-passages",
+      "recorded_version_number": 2,
+      "recorded_dataset_version_id": 20819121,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "abdullah1afify/ntl-generations",
+      "url": "https://www.kaggle.com/datasets/abdullah1afify/ntl-generations",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": 20840500,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "dophuchung/ntl-proxy-generations",
+      "url": "https://www.kaggle.com/datasets/dophuchung/ntl-proxy-generations",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": 20847146,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "zbigniewkirchner/ntl-qwen3-8b-lora-claude-head",
+      "url": "https://www.kaggle.com/datasets/zbigniewkirchner/ntl-qwen3-8b-lora-claude-head",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": 20831302,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "josephadamski91/ntl-atlas-qwen3-8b-v1",
+      "url": "https://www.kaggle.com/datasets/josephadamski91/ntl-atlas-qwen3-8b-v1",
+      "recorded_version_number": 2,
+      "recorded_dataset_version_id": 20860165,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "lucasboesen/ntl-free-proxy-generations",
+      "url": "https://www.kaggle.com/datasets/lucasboesen/ntl-free-proxy-generations",
+      "recorded_version_number": 4,
+      "recorded_dataset_version_id": 20976760,
+      "original_scored_v1_binding": false,
+      "note": "Own .606 pinned v4 ID20976760; public scored V1 v3/v4 binding remains unresolved."
+    },
+    {
+      "kind": "dataset",
+      "ref": "nishantdahal/ntl-two-stage-lora",
+      "url": "https://www.kaggle.com/datasets/nishantdahal/ntl-two-stage-lora",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": 20934027,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "prvsiyan/prvsiyans-extended-name-that-llm-dataset",
+      "url": "https://www.kaggle.com/datasets/prvsiyan/prvsiyans-extended-name-that-llm-dataset",
+      "recorded_version_number": 4,
+      "recorded_dataset_version_id": 20878919,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "bbucxi/qwen35-9b-safetensors",
+      "url": "https://www.kaggle.com/datasets/bbucxi/qwen35-9b-safetensors",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": 18975315,
+      "original_scored_v1_binding": "Recorded selected-card/version mapping; original immutable scored-input bytes were not compared.",
+      "note": null
+    },
+    {
+      "kind": "dataset",
+      "ref": "pjmathematician/ultrabert-380m-ntl",
+      "url": "https://www.kaggle.com/datasets/pjmathematician/ultrabert-380m-ntl",
+      "recorded_version_number": 1,
+      "recorded_dataset_version_id": null,
+      "original_scored_v1_binding": false,
+      "note": "Do not assign own unmapped datasetVersion 20736096 by elimination."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-glm4-9b-trunc25",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-glm4-9b-trunc25",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-extract-encoders2",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-extract-encoders2",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-electra-large-weights",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-electra-large-weights",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-desklib-weights",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-desklib-weights",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lightningv08/ntl-lora24-fivefold-training",
+      "url": "https://www.kaggle.com/code/lightningv08/ntl-lora24-fivefold-training",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records.",
+      "current_availability": "Unavailable on the observed ordinary page; public Input has one Private Datasource in the matching historical position. Exact private ID not established.",
+      "required_branch": "lora24_public; marker **/lora24/final/COMPLETE.json, plain weight .177 and conditional centered twin .15."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-train-lora24-s7",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-train-lora24-s7",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-train-tokattn",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-train-tokattn",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "lucasboesen/name-that-llm-train-tokattn2",
+      "url": "https://www.kaggle.com/code/lucasboesen/name-that-llm-train-tokattn2",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "notebook_output",
+      "ref": "vnton37nguyn/ntl-train-lora-qwen25-instyle",
+      "url": "https://www.kaggle.com/code/vnton37nguyn/ntl-train-lora-qwen25-instyle",
+      "exact_script_version_for_this_ref": null,
+      "note": "Recorded public reference. Exact per-reference kernel version binding was not established from the saved records."
+    },
+    {
+      "kind": "model",
+      "ref": "qwen-lm/qwen-3/Transformers/4b-base/1",
+      "url": "https://www.kaggle.com/models/qwen-lm/qwen-3/Transformers/4b-base/1",
+      "version": 1
+    },
+    {
+      "kind": "model",
+      "ref": "qwen-lm/qwen-3/Transformers/8b-base/1",
+      "url": "https://www.kaggle.com/models/qwen-lm/qwen-3/Transformers/8b-base/1",
+      "version": 1
+    },
+    {
+      "kind": "model",
+      "ref": "qwen-lm/qwen-3/Transformers/14b-base/1",
+      "url": "https://www.kaggle.com/models/qwen-lm/qwen-3/Transformers/14b-base/1",
+      "version": 1
+    },
+    {
+      "kind": "model",
+      "ref": "qwen-lm/qwen2.5/Transformers/7b/1",
+      "url": "https://www.kaggle.com/models/qwen-lm/qwen2.5/Transformers/7b/1",
+      "version": 1
+    }
+  ],
+  "version_limitations": [
+    "Copy & Edit can resolve different current input revisions. The original scored V1 Lucas v3/v4 binding remains unresolved.",
+    "UltraBERT public version 1 was recorded, but its numeric dataset version mapping was not established; do not infer it by elimination.",
+    "Nine notebook reference names and numeric pins were not authoritatively paired. This file does not claim a complete immutable environment."
+  ],
+  "settings": {
+    "accelerator": "T4 x2",
+    "internet": "Off"
+  },
+  "permissions": "Users accept competition rules and any model/data conditions in their own account. This code license grants no permissions to unavailable or third-party weights/data."
+}

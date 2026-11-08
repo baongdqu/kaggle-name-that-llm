@@ -1,0 +1,53 @@
+{
+ "cfg": {
+  "model_dir": "google/gemma-2-9b",
+  "keep": 24,
+  "layers": [
+   2,
+   4,
+   6,
+   8,
+   12,
+   16,
+   20,
+   24
+  ],
+  "max_len": 447,
+  "r": 16,
+  "alpha": 32,
+  "ldrop": 0.05,
+  "head_drop": 0.1,
+  "wd": 0.01,
+  "warmup": 0.1,
+  "triplets_per_step": 6,
+  "seed": 42,
+  "stage1_epochs": 1.0,
+  "stage2_epochs": 2.0
+ },
+ "labels": [
+  "gpt-5.5",
+  "gpt-5.6-luna",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-6-astra",
+  "gemini-3.1-pro-preview",
+  "gemini-3.6-flash",
+  "gemini-3.7-flash",
+  "gemini-3.8-flash",
+  "claude-opus-4-6",
+  "claude-opus-4-8",
+  "claude-opus-5",
+  "claude-sonnet-5",
+  "claude-fable-5",
+  "qwen3.8-max",
+  "glm-5.3",
+  "glm-5.3-flash",
+  "kimi-k3"
+ ],
+ "base": {
+  "model_type": "gemma2",
+  "hidden_size": 3584,
+  "num_hidden_layers": 42
+ },
+ "recipe": "alexchilton name-that-llm colab/two_stage_lora.py (two-stage recipe of nishantdahal/two-stage-lora-on-the-public-pool)"
+}

@@ -1,0 +1,30 @@
+{
+  "choices": [
+    {
+      "finish_reason": "length",
+      "index": 0,
+      "logprobs": null,
+      "message": null
+    }
+  ],
+  "created": 0,
+  "id": "msg_vrtx_011CgeCQNoqFr63FuEV5XpfH",
+  "model": "anthropic/claude-sonnet-5@default",
+  "object": "chat.completion",
+  "usage": {
+    "completion_tokens": 4099,
+    "completion_tokens_details": {
+      "reasoning_tokens": 4096
+    },
+    "cost": {
+      "input_tokens_cost_nanodollars": 449400,
+      "output_tokens_cost_nanodollars": 40960000
+    },
+    "prompt_tokens": 2238,
+    "prompt_tokens_details": {
+      "cached_tokens": 2237
+    },
+    "total_backend_latency_ms": 51268,
+    "total_tokens": 6337
+  }
+}

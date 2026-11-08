@@ -1,0 +1,48 @@
+## P1 (tiếp tục): Vector Perplexity / Log-likelihood đa mô hình mở
+
+### 1.1 Kiến trúc feature vector
+
+Thay vì 1 giá trị log-likelihood (Qwen3-8B) chỉ dùng cho vùng `margin < 0.30`, build ma trận feature **N×K** cho **toàn bộ** tập train/test:
+
+```
+Models (K=5-7, ưu tiên theo độ đa dạng kiến trúc/tokenizer):
+- Qwen3-8B-base      (đã có)
+- Llama-3.1-8B-base
+- Gemma-2-9B-base
+- Mistral-7B-v0.1-base
+- Phi-3-mini-4k-base (nhỏ, nhanh, bù tốc độ)
+- (optional) OLMo-7B-base — open-weight + open-data, rất nhạy với text "điển hình thống kê"
+```
+
+**Không dừng ở raw log-likelihood** — đó là lỗi làm feature yếu. Derive thêm 4 nhóm:
+
+1. **Pairwise Binoculars score** (SOTA zero-shot, quan trọng nhất):
+   ```
+   B(x; M1, M2) = PPL_M1(x) / X-PPL(M1, M2)(x)
+   ```
+   X-PPL = cross-entropy giữa phân phối dự đoán của M1 và M2 tại từng vị trí token. Tính cho **mọi cặp (i,j)** trong K model → thêm C(K,2) features. Đây là tín hiệu phân biệt AI/human mạnh hơn hẳn single-model PPL vì loại bỏ nhiễu "độ khó văn bản nội tại".
+
+2. **Cross-model dispersion**: `std(logLL)`, `range(max-min)`, `coefficient of variation` của vector K log-likelihood. Trực giác: text AI-generated có **variance thấp** giữa các base model (vì đều "đoán" tốt theo thống kê ngôn ngữ chung), human text variance cao hơn do idiosyncrasy cá nhân.
+
+3. **Rank-agreement feature**: với mỗi token, đếm model nào xếp token thực tế vào top-10 xác suất → tỷ lệ đồng thuận trung bình qua K model (giống DetectGPT curvature nhưng multi-observer).
+
+4. **Token-level entropy trung bình** mỗi model + entropy của chính entropy (meta-entropy) — bắt được "độ phẳng" phân phối đặc trưng AI.
+
+→ Tổng: K raw LL + C(K,2) Binoculars + 3 dispersion stats + K entropy ≈ **25-35 chiều**, đưa thẳng vào meta-model (không train riêng NN, dùng GBM để giữ interpretability).
+
+### 1.2 Pipeline tối ưu tốc độ (bottleneck chính)
+
+```python
+# Dùng vLLM hoặc HF generate(output_scores=True) batch lớn, fp16/bf16
+# Cache logits layer cuối, không cần generate — chỉ forward 1 pass
+for model_name in BASE_MODELS:
+    model = load_quantized(model_name, dtype="bf16", device_map="auto")
+    for batch in dataloader(texts, batch_size=32):
+        logits = model(batch, labels=batch.input_ids).logits
+        ll = compute_token_logprob(logits, batch.input_ids)
+        cache[model_name][batch.idx] = ll  # lưu per-token logprob, KHÔNG chỉ sum
+```
+
+**Quan trọng**: lưu **per-token log-prob**, không chỉ scalar PPL — vì Binoculars score và rank-agreement cần alignment token-level giữa các model → phải xử lý **tokenizer mismatch** (Qwen/Llama/Gemma dùng BPE khác nhau). Giải pháp: align theo **character offset**, không theo token index, hoặc tính riêng rồi chỉ dùng sequence-level aggregation cho các cặp tokenizer khác nhau (Binoculars gốc cũng gặp vấn đề này, paper gốc dùng cùng tokenizer family cho M1/M2).
+
+Chi phí: 5 model × N samples × 1 forward pass, dùng model 7-9B quantized int8 trên A100 → khả thi batch toàn bộ trong vài giờ, không phải realtime n

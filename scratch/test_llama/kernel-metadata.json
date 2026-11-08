@@ -1,0 +1,20 @@
+{
+  "id": "baonguyenduyquoc/test-llama-access",
+  "title": "Test Llama Access",
+  "code_file": "test_llama.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "lizhecheng/googlegemma-2-9b",
+    "alexchilton/ntl-ts-gemma2-9b"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "name-that-llm"
+  ],
+  "model_sources": []
+}

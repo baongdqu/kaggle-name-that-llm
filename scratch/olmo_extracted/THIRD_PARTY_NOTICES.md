@@ -1,0 +1,6 @@
+Nishant Dahal: Two-stage LoRA on the public pool,v2/script359887828, Apache2.0 source. Original source preserved in nishant_0592_original.ipynb.
+prvsiyan: The Prompt Is Not the Author,v1/script359792979, Apache2.0 source. gaussian_core.py extracts sixteen mathematical functions without mathematical changes; original source SHA256 a7cf18299d3b6d902dfef2069f7d8f435f95b180cdddfd70ffb99e13478346f2.
+kirilltym: Two-Stage LoRA | Gaussian Readout,v4/script360050107. Credit for the disclosed two-stage8B/grouped Gaussian method and its fixed PCA128/temperature3/weight.10 settings. Grouped8B integration follows the disclosed method; Gaussian functions are from the licensed prvsiyan source.
+Dataset nishantdahal/ntl-two-stage-lora v1,ID12693662: CC BY-SA4.0, https://creativecommons.org/licenses/by-sa/4.0/. Public pool attribution and share-alike notices remain applicable.
+Qwen3-8B-Base/Qwen3-14B-Base: Qwen team,Apache2.0. OLMo-2-1124-7B: Allen Institute for AI,Apache2.0; native final450 inference adapter/loader retain Apache2.0 notices.
+Changes: grouped Gaussian head on the joint test+official-training8B forward; frozen native24 OLMo contribution; sequential offline process orchestration; Unicode/no-pickle score transport and label-name remapping. Original backbone extraction, plain/twin weights and uniform balancing remain unchanged.

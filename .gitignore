@@ -1,0 +1,41 @@
+# Data & Datasets
+/data/
+/downloaded_datasets/
+/dataset_sibling_lora/
+/scratch/lora24_sibling_out/
+
+# Large binary, data & model weights
+*.parquet
+*.npy
+*.npz
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.tar
+*.gz
+*.zip
+*.7z
+*.jsonl
+
+# Environment & Credentials
+.env
+*.env
+*.key
+*.pem
+kaggle.json
+
+# Cache & Temporary Files
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+cache/
+.cache/
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

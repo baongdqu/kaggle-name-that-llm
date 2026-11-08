@@ -1,0 +1,20 @@
+Name That LLM 0.606 Reproduction Source
+
+Copyright 2026 cosmorin, for own I/O staging helper and release documentation.
+Code licensed under Apache License 2.0; see LICENSE.
+
+This source derives from Joseph Adamski's Teach the Model + 10% ATLAS,
+script version 360203672. It retains the original Notebook's credits to
+Kirill Tymchyshyn, Nishant Dahal, prvsiyan, Travis Nguyen, Lucas Boesen,
+Obstacle Developer, Vladislav Lavrentev, Zbigniew Kirchner, pjmathematician,
+and the model/data authors linked in its historical documentation.
+
+Own modifications: byte-verified local scratch staging of selected model
+files, plus release documentation and removal of execution outputs and
+account/runtime metadata. Prediction settings were not intentionally
+changed by the I/O edits. This is a .606 saved reproduction, not a claim
+to author the public .607 method or to an independent accuracy gain.
+
+No license or access grant to third-party input data, checkpoints or
+unavailable/private inputs is included. Such assets are not redistributed.
+Historical upstream license descriptions remain their authors' statements.

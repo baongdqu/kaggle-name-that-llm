@@ -1,0 +1,36 @@
+{
+  "id": "baonguyenduyquoc/name-that-llm-champion-v5-microstylometrics",
+  "title": "Name That LLM - Champion V5 MicroStylometrics",
+  "code_file": "champion-v5.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "bbucxi/qwen35-9b-safetensors",
+    "pjmathematician/ultrabert-380m-ntl",
+    "seyitkaangunes/ntl-extra-api-passages",
+    "olegzholobov/name-that-llm-response-corpus"
+  ],
+  "kernel_sources": [
+    "lucasboesen/name-that-llm-glm4-9b-trunc25",
+    "lucasboesen/name-that-llm-extract-encoders2",
+    "lucasboesen/name-that-llm-electra-large-weights",
+    "lucasboesen/name-that-llm-desklib-weights",
+    "lightningv08/ntl-lora24-fivefold-training",
+    "lucasboesen/name-that-llm-train-lora24-s7",
+    "lucasboesen/name-that-llm-train-tokattn",
+    "lucasboesen/name-that-llm-train-tokattn2"
+  ],
+  "competition_sources": [
+    "name-that-llm"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3/Transformers/4b-base/1",
+    "qwen-lm/qwen-3/Transformers/8b-base/1",
+    "qwen-lm/qwen2.5/Transformers/7b/1"
+  ],
+  "machine_shape": "NvidiaTeslaT4"
+}

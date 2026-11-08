@@ -1,0 +1,64 @@
+# Đánh giá "Name That LLM" — Phân tích chuyên sâu
+
+## 1. Bản chất bài toán & Trần Bayes
+
+Đây **không phải** bài toán text classification thông thường — nó là bài toán **authorship attribution với các "thủ phạm" có quan hệ huyết thống**. Điểm mấu chốt quyết định trần lý thuyết nằm ở cấu trúc 18 lớp:
+
+**Các cụm sinh đôi cùng huyết thống (nguồn Bayes error chính):**
+- GPT-4o ↔ GPT-4o-mini (cùng RLHF pipeline, cùng tokenizer o200k)
+- Claude 3.5 Sonnet ↔ Claude 3 Haiku (cùng Constitutional AI style)
+- Gemini 1.5 Pro ↔ Flash
+- Qwen 2.5 72B ↔ 7B
+- Gemma 2 9B ↔ 27B
+- DeepSeek Coder V2 ↔ V2.5
+- Llama 3.1 8B ↔ 70B
+
+7 cặp này chiếm **14/18 lớp**. Trong mỗi cặp, chỉ có "model size" là biến phân biệt chính — tạo ra tín hiệu yếu dạng "độ phức tạp cú pháp", "độ sâu lý luận", "tỷ lệ lỗi logic" chứ không phải tín hiệu bề mặt rõ ràng (typography, formatting bias gần như giống hệt nhau trong cùng gia đình vì cùng post-training recipe).
+
+**Ước lượng trần Bayes của tôi:** balanced accuracy khoảng **0.78 – 0.85**, không phải 1.0. Lý do: ngay cả con người đọc kỹ cũng không phân biệt nổi Qwen 7B vs 72B trả lời cùng 1 câu hỏi dễ, trong khi với các "outlier trực giao" (DeepSeek Coder trên code prompt, Command R+ với citation style đặc trưng, Llama với tokenizer 128k riêng) thì gần như tách biệt tuyệt đối (recall có thể >0.95).
+
+→ Điểm 0.662 hiện tại **không hề thấp** so với trần 0.80-0.85 — nó cho thấy các bạn đã khai thác tốt phần "dễ" (4-5 model outlier), và phần còn thiếu nằm ở việc đấm thẳng vào **14 lớp sinh đôi** chứ không phải cải thiện tổng thể dàn trải.
+
+---
+
+## 2. Nhận xét lộ trình: Đúng đâu, Ngõ cụt đâu
+
+### Những gì làm **rất đúng bản chất bài toán**:
+
+- **Prompt-Aware Relative Length Calibration (V59)**: Đây là insight đúng nhất trong cả hành trình. Vì cấu trúc Latin Square đảm bảo mỗi prompt luôn có đủ 18 model trả lời, length z-score theo cụm prompt triệt tiêu được confound "prompt dễ/khó" và giữ lại thuần tín hiệu "model này có xu hướng viết dài/ngắn" — đúng là feature mạnh nhất có thể rút ra từ cấu trúc đề thi.
+
+- **Latin-Square Anchor Kuhn-Munkres**: Khai thác đúng ràng buộc tổ hợp (combinatorial constraint) của đề bài — mỗi prompt không trùng model. Đây là kỹ thuật hiếm người nghĩ tới và là lợi thế cấu trúc thực sự, không phải feature engineering thông thường.
+
+- **ATLAS log-likelihood cho ambiguous cases**: Đúng chiến lược "zero-shot property nội tại" thay vì học style — đây là hướng robust nhất vì không phụ thuộc vào domain shift.
+
+- **Orthogonal diversity (Llama 8B, tokenizer 128k độc lập)**: Đúng nguyên lý ensemble — thêm member không tương quan quan trọng hơn thêm member mạnh nhưng trùng lặp lỗi.
+
+### Ngõ cụt đã xác nhận (và tại sao):
+
+**Synthetic fine-tuning (V55-57, V64) thất bại không phải ngẫu nhiên** — nó thất bại vì bản chất: text bạn tự sinh ra (proxy generations) khác text thật của ban tổ chức ở **sampling parameters** (temperature, top-p), **system prompt** (có thể BTC dùng system prompt chuẩn hóa riêng), và **API version/snapshot date**. Model học "style của proxy" thay vì "style của model thật" → overfit vào nguồn giả. 
+
+**Bài học quan trọng:** đừng lặp lại hướng "tạo thêm data để fine-tune" dưới bất kỳ biến thể nào trừ khi bạn có cách lấy **chính output thật** gần điều kiện thi (cùng temperature mặc định provider, không thêm system prompt tùy ý). Nếu không chắc tái tạo đúng điều kiện, hãy dừng hẳn hướng supervised fine-tune trên proxy data — chuyển hoàn toàn sang zero-shot statistics (như ATLAS) hoặc feature engineering tường minh.
+
+---
+
+## 3. Chiến lược cụ thể để vượt 0.662 → 0.700+
+
+### ⚠️ Cảnh báo rủi ro cần xử lý TRƯỚC KHI làm gì khác
+
+Với chỉ 60 prompts (1,080 dòng) ở public LB, **confidence interval của balanced accuracy khá rộng**. Nếu 67 version đã được tune chủ yếu bám theo phản hồi public LB, có khả năng cao đang **overfit vào 60 prompt cụ thể** đó. 
+
+**Việc cần làm ngay (P0, không tốn thêm compute)**: dựng lại CV nội bộ **group theo prompt_id** (không phải theo sample), chia 5-fold, đảm bảo mỗi fold có đúng cấu trúc 18-model-per-prompt. So sánh CV score vs LB score của 10 version gần nhất. Nếu độ lệch giữa hai đường cong đang giãn ra theo version → đang overfit LB, cần quay lại chọn model dựa theo CV chứ không theo leaderboard feedback.
+
+### P0 — Tấn công trực diện 7 cặp sinh đôi (Pairwise Specialist Cascade)
+
+Đây là đòn bẩy lớn nhất còn chưa khai thác. Cụ thể:
+
+1. Lấy confusion matrix từ CV, xác định chính xác cặp nào bị nhầm nhiều nhất (dự đoán: Qwen 72B↔7B, Gemma 9B↔27B, Claude Sonnet↔Haiku là 3 cặp tệ nhất).
+2. Train **binary classifier chuyên biệt** cho từng cặp, dùng feature set hẹp nhưng sâu: *sentence-length variance* (không chỉ mean), *lexical sophistication* (TTR, rare word ratio), *hedging/refusal phrase frequency*, *discourse connective density* ("Furthermore", "However", "That said").
+3. Cascade routing: base ensemble ra top-2. Nếu top-2 margin nhỏ VÀ top-2 nằm trong 1 cặp sinh đôi đã biết → route qua specialist binary model để phá tie, override quyết định gốc.
+
+Đây khác về bản chất với multiclass classifier chung — specialist chỉ cần học 1 ranh giới quyết định thay vì 18, nên signal-to-noise cao hơn hẳn với cùng lượng data.
+
+### P1 — Mở rộng ATLAS log-likelihood thành vector đầy đủ (không chỉ ambiguous case)
+
+Hiện tại bạn chỉ dùng log-likelihood của Qwen3-8B Base cho case margin<0.30. Đề xuất: tính log-likelihood/perplexity của text trên **càng nhiều base model mở càng tốt** (Llama 3.1 8B base, Gemma 2 9B base, Mistral base nếu truy cập được) cho **TOÀN BỘ** samples, tạo thành vector k-chiều, đưa vào làm fe

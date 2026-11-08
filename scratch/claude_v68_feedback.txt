@@ -1,0 +1,25 @@
+Trước khi bàn tới trọng số, tôi cần nói rõ một điểm: tôi không có cách nào để tự kiểm chứng các con số (0.662, Rank 312/4150, +0.60%, 86% win-rate...) — tôi không chạy được "Digital Twin Lab" của bạn, không thấy dữ liệu gốc, không thấy code. Tôi sẽ đánh giá thiết kế V68 dựa trên logic kỹ thuật thuần túy, và chỉ ra những chỗ con số các bạn đưa ra *nên* bị nghi ngờ trước khi tin tưởng push.
+
+**1. Bài học từ V65/V66/V67 bị bỏ qua**
+
+Cả ba bản đêm qua đều "nhìn có vẻ hợp lý" trước khi submit, nhưng thực tế trên hidden test lại tệ hơn. Điều đó nghĩa là pipeline ước lượng nội bộ của các bạn (dù là Digital Twin Lab hay gì khác) đang có **độ lệch hệ thống** so với test thật — không phải nhiễu ngẫu nhiên, mà có khả năng là bias do overfit vào tập mô phỏng nhỏ. Vậy thì con số "+0.0060 / 86% win-rate" của V68 cần bị chiết khấu mạnh, không nên tin nguyên văn. Tôi sẽ coi đây là ước lượng lạc quan, thực tế có thể dao động quanh 0, thậm chí âm.
+
+**2. Rủi ro thống kê cụ thể trong TRI-ATTRIBUTE**
+
+- **n=50 kịch bản, lát cắt 40%** là mẫu rất nhỏ để khẳng định 86% win-rate có ý nghĩa thống kê. Với n~50, cần tính khoảng tin cậy (bootstrap CI) cho winrate — nếu CI chứa 50%, con số "86%" không đáng tin.
+- **TTR bị nhiễm bởi độ dài text**: Type-Token Ratio giảm tự nhiên khi văn bản dài ra (toán học thuần túy, không liên quan phong cách). Nếu không chuẩn hóa (dùng MATTR hoặc root-TTR), z_ttr rất có thể chỉ là **bản sao méo của z_len** chứ không phải tín hiệu độc lập về "độ phong phú từ vựng". Cần kiểm tra correlation(z_ttr, z_len) trước khi tin đây là chiều thông tin mới.
+- **z_avg_wlen với cụm nhỏ không ổn định**: Nếu một số cụm (sau khi gom bằng thr=0.15) chỉ có vài mẫu, thì trung bình/độ lệch chuẩn để tính z-score cho avg-word-length sẽ cực kỳ nhiễu (n<5 → variance ước lượng sai lệch lớn). Đây chính là kiểu lỗi tương tự "false-merge" ở ngưỡng 0.08 nhưng ở chiều ngược lại — cụm quá nhỏ.
+
+**3. Multicollinearity**
+
+z_len, z_avg_wlen, z_ttr đều bắt nguồn từ cùng một trục "độ dài/cấu trúc câu chữ". Nếu không kiểm tra VIF (variance inflation factor) giữa 3 biến này trước khi gộp trọng số, model có thể gán trọng số sai lệch (một biến "ăn" hết tín hiệu của biến kia), khiến kết quả không ổn định giữa các fold.
+
+**Khuyến nghị cụ thể trước khi submit:**
+
+1. **Chuẩn hóa TTR theo độ dài** (MATTR với window cố định) trước khi tính z_ttr — nếu không, đây là feature giả.
+2. **Ablation bắt buộc**: test riêng z_avg_wlen alone và z_ttr alone (không chỉ combo) để biết ai đóng góp thật, ai là nhiễu ăn theo.
+3. **Fallback an toàn cho cụm nhỏ**: nếu |cluster| < ~8, chỉ dùng z_len gốc của V63, không áp 2 chiều mới — tránh lặp lại lỗi kiểu "false-merge" ở quy mô thống kê.
+4. **Không dùng cả 5 lượt quota cho một hướng**: Vì lịch sử 3/3 bản gần nhất (V65, V66, V67) đều overfit âm bản so với kỳ vọng nội bộ, hãy **submit V68 một lần, giữ lại ít nhất 2 lượt dự phòng** để rollback về cấu hình V63 (0.662) nếu kết quả thật kém hơn mô phỏng — đừng mạo hiểm đốt hết quota vào một giả thuyết chưa được hidden-test xác nhận.
+5. Nếu được, báo cáo thêm correlation matrix giữa 3 z-feature và CI của 86% win-rate trước khi tôi đưa ý kiến cuối về trọng số kết hợp — hiện tại tôi khuyên **chưa chốt trọng số cụ thể** vì thiếu dữ liệu để biện minh con số nào hơn con số nào.
+
+Tóm lại: ý tưởng tấn công "sibling confusion" bằng đặc trưng phong cách tương đối là hướng đi đúng về mặt logic (đánh trúng vấn đề phân biệt trong-cùng-họ thay vì sửa ngưỡng gom cụm). Nhưng con số +0.60%/86% cần được xem là **giả thuyết cần kiểm định thêm**, không phải kết quả đã xác nhận — nhất là sau khi 3/3 bản gần nhất đều lệch âm so với kỳ vọng nội bộ.

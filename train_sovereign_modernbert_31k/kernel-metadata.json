@@ -1,0 +1,24 @@
+{
+  "id": "baonguyenduyquoc/ntl-train-sovereign-modernbert-31k",
+  "title": "NTL Train Sovereign ModernBERT 31k",
+  "code_file": "train-sovereign-modernbert-31k.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "baonguyenduyquoc/ntl-31k-balanced-pool",
+    "dhruvtibarewal/nlm-enc-v5"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "name-that-llm"
+  ],
+  "model_sources": [],
+  "machine_shape": "NvidiaTeslaT4"
+}

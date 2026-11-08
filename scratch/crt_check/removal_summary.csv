@@ -1,0 +1,11 @@
+reason,rows_removed
+off_genre_source,38747
+api_dump,13114
+refusal,6939
+licence_risk,4289
+off_format,2197
+source_unavailable,2195
+truncated,1515
+typography_mismatch,1278
+train_prompt_overlap,284
+(kept in v9),192926

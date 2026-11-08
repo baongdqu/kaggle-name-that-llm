@@ -1,0 +1,13 @@
+# Phân tích đòn bẩy kỹ thuật: 0.662 → >0.700 cho "Name That LLM" (18 classes, balanced accuracy)
+
+**Nhận định mở đầu:** Khoảng cách 0.662 → 0.710 (~4.8 điểm) không phải là khoảng cách của *tuning nhẹ* (đổi learning rate, đổi vài trọng số ensemble) — đó là khoảng cách cần **một đòn bẩy cấu trúc** (structural lever) thay đổi bản chất tín hiệu đưa vào model, hoặc sửa một lỗi hệ thống đang kìm hãm per-class recall ở nhóm class khó. Tôi xếp hạng theo **ROI / effort**, không theo thứ tự "nghe hay".
+
+---
+
+## 1. Calibration + Balanced Logit Adjustment — ROI cao nhất, effort thấp nhất
+
+**Cơ chế tại sao hiệu quả:** Balanced accuracy = trung bình recall trên **mỗi lớp**, nghĩa là 1 class bị model nhầm hệ thống (ví dụ GPT-4 vs GPT-4o, hay Llama-3-8B vs Llama-3-70B — các cặp "anh em cùng nhà" dễ bị混淆 nhất) sẽ kéo điểm xuống nặng hơn nhiều so với accuracy thường, bất kể class đó phổ biến hay hiếm trong data.
+
+Nếu 3 backbone (Qwen3-14B, ModernBERT, DeBERTa) được train trên data có phân phối lớp không đều, logit raw sẽ thiên vị lớp phổ biến. **Logit adjustment** (trừ `log(prior_class)` khỏi logit trước softmax — kỹ thuật balanced softmax/post-hoc calibration) thường cho +1~3% balanced accuracy **không cần train lại gì**, chỉ sửa post-processing.
+
+**Hành động cụ thể:** Dựng confusion matrix trên validation set hiện có (nếu có), xác định top-5 cặp class bị nhầm nhiều nhất → đây chính là nơi điểm đang "rò rỉ". Nếu không có validation local, d

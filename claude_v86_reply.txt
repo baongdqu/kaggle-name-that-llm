@@ -1,0 +1,13 @@
+# Phản biện V86: Logit Adjustment thay Hungarian — Đánh giá kỹ thuật chi tiết
+
+**Nhận định mở đầu:** Hướng đi này **đúng về mặt lý thuyết** — logit adjustment (Menon et al., "Long-tail learning via logit adjustment") là công thức được chứng minh **Bayes-consistent cho chính xác balanced accuracy**, trong khi Hungarian matching là ràng buộc nhân tạo không có cơ sở lý thuyết rõ ràng cho bài toán classification độc lập từng sample. Đây là bước đi **có tư duy đúng** — nhưng có 3 điểm kỹ thuật bắt buộc phải làm rõ trước khi khóa submission, vì chúng quyết định V86 là bứt phá thật hay chỉ là may rủi.
+
+---
+
+## 0. Câu hỏi chặn đầu (blocking question) — PHẢI trả lời trước khi làm gì khác
+
+**Train set có balanced hay không?**
+
+Đây là câu hỏi tối quan trọng mà nếu bỏ qua, toàn bộ công thức `adjusted_logit = raw_logit - τ·log(class_prior)` có thể **vô nghĩa hoàn toàn**:
+
+- Nếu 18 class trong train set đã **balanced** (số lượng mẫu gần bằng nhau mỗi class — rất có khả năng xảy ra với benchmark tổng hợp kiểu "Name That LLM"), thì `log(class_prior)` là **hằng số gần như giống nhau cho mọi class**. Trừ cùng một hằng số khỏi tất cả logit của một sample **không làm thay đổi thứ hạng (argmax)** — tức phép adjustment này là **no-op tuyệt đối**, không ảnh hưởng gì đến balanced accuracy dù chọn

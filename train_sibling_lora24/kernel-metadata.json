@@ -1,0 +1,26 @@
+{
+  "id": "baonguyenduyquoc/ntl-train-sibling-contrastive-lora24",
+  "title": "NTL Train Sibling Contrastive LoRA24",
+  "code_file": "train-sibling-contrastive-lora24.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "dhruvtibarewal/nlm-matched-clean",
+    "crtproduction/name-that-llm-open-pool"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "name-that-llm"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3/Transformers/8b-base/1"
+  ],
+  "machine_shape": "NvidiaTeslaT4"
+}
